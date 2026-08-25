@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления магазином</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f5f5f5; color: #333; }
+        .hidden { display: none !important; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input, textarea, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { background-color: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #0056b3; }
+        .logout-btn { background-color: #dc3545; width: auto; float: right; padding: 5px 15px; }
+        .logout-btn:hover { background-color: #bd2130; }
+        .product-card { background: #fafafa; border: 1px solid #e0e0e0; padding: 15px; margin: 10px 0; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Окно авторизации -->
+        <div id="auth-block">
+            <h2>Вход в панель администратора</h2>
+            <input type="email" id="admin-email" placeholder="Email администратора">
+            <input type="password" id="admin-password" placeholder="Пароль">
+            <button id="login-btn">Войти в систему</button>
+        </div>
+
+        <!-- Рабочая зона админки -->
+        <div id="admin-block" class="hidden">
+            <button id="logout-btn" class="logout-btn">Выйти</button>
+            <h2>Управление магазином (VapeUp)</h2>
+            <hr>
+            
+            <h3>Добавить новый товар</h3>
+            <input type="text" id="prod-name" placeholder="Название товара (например, Жидкость Berry)">
+            <input type="number" id="prod-price" placeholder="Цена (руб.)">
+            <textarea id="prod-desc" placeholder="Описание товара" rows="3"></textarea>
+            <button id="save-btn">Сохранить на витрину</button>
+
+            <hr>
+            <h3>Текущие товары в базе:</h3>
+            <div id="products-list">Загрузка товаров...</div>
+        </div>
+    </div>
+
+    <!-- Подключаем главный JS файл через модульную систему Vite -->
+    <script type="module" src="./src/app.js"></script>
+</body>
+</html>
