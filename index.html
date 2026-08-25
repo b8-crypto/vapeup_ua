@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAPEUP — Управління магазином</title>
+    <style>
+        :root {
+            --bg-color: #0b0b0f;
+            --panel-bg: #141419;
+            --panel-hover: #1c1c24;
+            --accent-color: #9d4edd;
+            --accent-glow: rgba(157, 78, 221, 0.35);
+            --text-main: #ffffff;
+            --text-muted: #9ba1a6;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --danger-color: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        h1 { font-size: 24px; font-weight: 800; color: var(--text-main); }
+        h1 span { color: var(--accent-color); text-shadow: 0 0 15px var(--accent-glow); }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .logout-btn:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input, textarea {
+            background: #0e0e12;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        .btn {
+            width: 100%;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-top: 8px;
+        }
+
+        .btn:hover {
+            background: #8537cb;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .section-title {
+            font-size: 18px;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .products-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .product-item {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .product-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .product-thumb {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            background: #0e0e12;
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .product-meta h3 { font-size: 15px; margin-bottom: 2px; }
+        .product-meta p { font-size: 13px; color: var(--text-muted); }
+
+        .delete-item-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .delete-item-btn:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .empty-text {
+            color: var(--text-muted);
+            text-align: center;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Управління магазином (<span>VapeUp</span>)</h1>
+            <button class="logout-btn" id="logout-btn">Вийти</button>
+        </header>
+
+        <div class="card">
+            <h2>Додати новий товар</h2>
+            <form id="add-product-form">
+                <div class="form-group">
+                    <label for="product-name">Назва товару</label>
+                    <input type="text" id="product-name" placeholder="Наприклад, Рідина Berry" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-price">Ціна (₴)</label>
+                    <input type="number" id="product-price" placeholder="Наприклад, 350" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-category">Категорія</label>
+                    <input type="text" id="product-category" placeholder="Наприклад, Рідини / Одноразки" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-image">Посилання на фотографію (URL)</label>
+                    <input type="url" id="product-image" placeholder="https://example.com/photo.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label for="product-desc">Опис товару</label>
+                    <textarea id="product-desc" placeholder="Короткий опис смаку або характеристик..."></textarea>
+                </div>
+
+                <button type="submit" class="btn" id="submit-btn">Зберегти на вітрину</button>
+            </form>
+        </div>
+
+        <h2 class="section-title">Товари на вітрині</h2>
+        <div class="products-list" id="admin-products-list">
+            <p class="empty-text">Завантаження товарів...</p>
+        </div>
+    </div>
+
+    <!-- Firebase скрипти -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcOmGdPiPTLvgXKnjNzViLkcbxsQgojho",
+            authDomain: "vapeup-d7f69.firebaseapp.com",
+            databaseURL: "https://vapeup-d7f69-default-rtdb.firebaseio.com",
+            projectId: "vapeup-d7f69",
+            storageBucket: "vapeup-d7f69.firebasestorage.app",
+            messagingSenderId: "1005547278329",
+            appId: "1:1005547278329:web:3d9f341f90a338eb93b728"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const form = document.getElementById('add-product-form');
+        const listContainer = document.getElementById('admin-products-list');
+        const submitBtn = document.getElementById('submit-btn');
+
+        // Додавання товару в базу
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Збереження...";
+
+            const name = document.getElementById('product-name').value;
+            const price = Number(document.getElementById('product-price').value);
+            const category = document.getElementById('product-category').value;
+            const imageUrl = document.getElementById('product-image').value;
+            const description = document.getElementById('product-desc').value;
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name: name.trim(),
+                    price: price,
+                    category: category.trim() || "Рідини",
+                    imageUrl: imageUrl.trim() !== "" ? imageUrl.trim() : "https://placehold.co/250x200/141419/9ba1a6?text=VAPEUP",
+                    description: description.trim()
+                });
+                
+                form.reset();
+                alert('Товар успішно додано на вітрину!');
+            } catch (error) {
+                console.error("Помилка додавання: ", error);
+                alert('Помилка при додаванні товару: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Зберегти на вітрину";
+            }
+        });
+
+        // Видалення товару
+        window.deleteProduct = async function(id) {
+            if (confirm('Видалити цей товар з вітрини?')) {
+                try {
+                    await deleteDoc(doc(db, "products", id));
+                } catch (error) {
+                    console.error("Помилка видалення: ", error);
+                    alert('Не вдалося видалити товар.');
+                }
+            }
+        };
+
+        // Вихід (повернення в каталог)
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            window.location.href = 'catalog.html';
+        });
+
+        // Слухач бази даних у реальному часі
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            listContainer.innerHTML = "";
+
+            if (snapshot.empty) {
+                listContainer.innerHTML = `<p class="empty-text">Вітрина поки що порожня.</p>`;
+                return;
+            }
+
+            snapshot.forEach((docSnap) => {
+                const product = docSnap.data();
+                const id = docSnap.id;
+                const img = product.imageUrl || 'https://placehold.co/250x200/141419/9ba1a6?text=VAPEUP';
+
+                listContainer.innerHTML += `
+                    <div class="product-item">
+                        <div class="product-left">
+                            <img src="${img}" alt="" class="product-thumb">
+                            <div class="product-meta">
+                                <h3>${product.name}</h3>
+                                <p>${product.category || "Категорія"} — <b>${product.price} ₴</b></p>
+                            </div>
+                        </div>
+                        <button class="delete-item-btn" onclick="deleteProduct('${id}')">Видалити</button>
+                    </div>
+                `;
+            });
+        }, (error) => {
+            console.error("Помилка підключення до бази: ", error);
+            listContainer.innerHTML = `<p class="empty-text" style="color: #ef4444;">Помилка завантаження бази даних.</p>`;
+        });
+    </script>
+</body>
+</html>
