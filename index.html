@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VAPEUP — Адмін-панель</title>
+    <style>
+        :root {
+            --bg-color: #0b0b0f;
+            --panel-bg: #141419;
+            --panel-hover: #1c1c24;
+            --accent-color: #9d4edd;
+            --accent-glow: rgba(157, 78, 221, 0.35);
+            --text-main: #ffffff;
+            --text-muted: #9ba1a6;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --danger-color: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        h1 { font-size: 26px; font-weight: 800; color: var(--text-main); }
+        h1 span { color: var(--accent-color); text-shadow: 0 0 15px var(--accent-glow); }
+
+        .back-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--text-main); }
+
+        /* Форма додавання */
+        .card {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        input {
+            background: #0e0e12;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background: #8537cb;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* Список товарів в адмінці */
+        .products-table {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .admin-product-item {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .product-info-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .admin-img {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            background: #0e0e12;
+            border-radius: 8px;
+            padding: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .admin-details h3 { font-size: 16px; margin-bottom: 2px; }
+        .admin-details p { font-size: 13px; color: var(--text-muted); }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger-color);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .delete-btn:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        @media(max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>VAPE<span>UP</span> | Адмін-панель</h1>
+            <a href="catalog.html" class="back-link">← Повернутися до каталогу</a>
+        </header>
+
+        <!-- Форма додавання товару -->
+        <div class="card">
+            <h2>Додати новий товар</h2>
+            <form id="add-product-form" class="form-grid">
+                <div class="form-group">
+                    <label for="product-name">Назва товару</label>
+                    <input type="text" id="product-name" placeholder="Наприклад: Elf Bar BC5000" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-price">Ціна (₴)</label>
+                    <input type="number" id="product-price" placeholder="Наприклад: 450" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-category">Категорія</label>
+                    <input type="text" id="product-category" placeholder="Наприклад: Одноразки / Рідини" required>
+                </div>
+                <div class="form-group">
+                    <label for="product-image">Посилання на зображення (URL)</label>
+                    <input type="url" id="product-image" placeholder="https://example.com/image.png">
+                </div>
+                <div class="form-group full-width">
+                    <button type="submit" class="btn">Додати товар до бази</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Список існуючих товарів -->
+        <h2 style="font-size: 18px; margin-bottom: 16px;">Керування товарами</h2>
+        <div class="products-table" id="admin-products-list">
+            <p style="color: var(--text-muted);">Завантаження списку...</p>
+        </div>
+    </div>
+
+    <!-- Firebase скрипти -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addCollection, addDoc, getDocs, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcOmGdPiPTLvgXKnjNzViLkcbxsQgojho",
+            authDomain: "vapeup-d7f69.firebaseapp.com",
+            databaseURL: "https://vapeup-d7f69-default-rtdb.firebaseio.com",
+            projectId: "vapeup-d7f69",
+            storageBucket: "vapeup-d7f69.firebasestorage.app",
+            messagingSenderId: "1005547278329",
+            appId: "1:1005547278329:web:3d9f341f90a338eb93b728"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const form = document.getElementById('add-product-form');
+        const listContainer = document.getElementById('admin-products-list');
+
+        // Обробка додавання товару
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('product-name').value;
+            const price = Number(document.getElementById('product-price').value);
+            const category = document.getElementById('product-category').value;
+            const imageUrl = document.getElementById('product-image').value;
+
+            try {
+                await addDoc(collection(db, "products"), {
+                    name,
+                    price,
+                    category,
+                    imageUrl: imageUrl.trim() !== "" ? imageUrl : "https://placehold.co/250x200/141419/9ba1a6?text=VAPEUP"
+                });
+                form.reset();
+                alert('Товар успішно додано!');
+            } catch (error) {
+                console.error("Помилка додавання: ", error);
+                alert('Сталася помилка при додаванні.');
+            }
+        });
+
+        // Видалення товару
+        window.deleteProduct = async function(id) {
+            if (confirm('Ви впевнені, що хочете видалити цей товар?')) {
+                try {
+                    await deleteDoc(doc(db, "products", id));
+                } catch (error) {
+                    console.error("Помилка видалення: ", error);
+                }
+            }
+        };
+
+        // Рендер списку в реальному часі
+        onSnapshot(collection(db, "products"), (snapshot) => {
+            listContainer.innerHTML = "";
+
+            if (snapshot.empty) {
+                listContainer.innerHTML = "<p style='color: var(--text-muted); text-align: center; padding: 30px;'>Товарів у базі поки немає.</p>";
+                return;
+            }
+
+            snapshot.forEach((docSnap) => {
+                const product = docSnap.data();
+                const id = docSnap.id;
+                const img = product.imageUrl || 'https://placehold.co/250x200/141419/9ba1a6?text=VAPEUP';
+
+                listContainer.innerHTML += `
+                    <div class="admin-product-item">
+                        <div class="product-info-left">
+                            <img src="${img}" alt="" class="admin-img">
+                            <div class="admin-details">
+                                <h3>${product.name}</h3>
+                                <p>${product.category} — <b>${product.price} ₴</b></p>
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="deleteProduct('${id}')">Видалити</button>
+                    </div>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
